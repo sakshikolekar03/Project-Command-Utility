@@ -36,5 +36,5 @@ How to run:
         Step 3: Run command: "node mycli.js help"
         Note: you can run any command from the given three commands.
 		
-If you want to see exection demo video, please visit: https://youtu.be/L4Ws5ZUMVDM
+If you want to see execution demo video, please visit: https://youtu.be/L4Ws5ZUMVDM
         
