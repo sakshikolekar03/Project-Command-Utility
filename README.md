@@ -35,4 +35,6 @@ How to run:
         Step 2: Go to Activity folder by using 'cd' command
         Step 3: Run command: "node mycli.js help"
         Note: you can run any command from the given three commands.
+		
+If you want to see exection demo video, please visit: https://youtu.be/L4Ws5ZUMVDM
         
