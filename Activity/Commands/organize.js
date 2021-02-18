@@ -1,5 +1,6 @@
 
 let fs=require("fs");
+//let rimraf = require("rimraf");
 const path=require('path');
 let orgDir;
 function organizeExecuter(dirPath)
@@ -15,11 +16,10 @@ function organizeExecuter(dirPath)
         fs.mkdirSync(subDirs[i]);
     }
 
-    console.log( fs.readdirSync(dirPath));
-
     fileOrganizer(dirPath);
+    deleteEmptyFoders(dirPath);
 
-    console.log("\n[STATUS]: organize command executed successfully...");
+    console.log("\n[STATUS]:All the files are organized now!! \n         organize command executed successfully...");
     console.log("-------------------------------------------------------------------------------------------");
 };
 
@@ -39,41 +39,34 @@ function putInCorrectFolder(filePath)
 {
         let filename=path.basename(filePath);
         let extension=path.extname(filePath);
-        console.log("filename: ",filename," extention: ",extension);
-
         if(extension==".jpeg" || extension==".jpg" || extension==".png" || extension==".gif")
         {
             fs.rename(filePath, orgDir+"/Images/"+filename, (err)=>{
                 if(err) throw err;
-                else console.log('Successfully moved');
                 });
         }
         else if(extension==".mp4" || extension==".avi" || extension==".mkv" || extension==".flv")
         {
             fs.rename(filePath, orgDir+"/Videos/"+filename, (err)=>{
                 if(err) throw err;
-                else console.log('Successfully moved');
                 });
         }
         else if(extension==".mp3" || extension==".wav")
         {
             fs.rename(filePath, orgDir+"/Audios/"+filename, (err)=>{
                 if(err) throw err;
-                else console.log('Successfully moved');
                 });
         }
         else if(extension==".docx" || extension==".doc" || extension==".pdf" || extension==".csv")
         {
             fs.rename(filePath, orgDir+"/Docs/"+filename, (err)=>{
                 if(err) throw err;
-                else console.log('Successfully moved');
                 });
         }
         else if(extension==".txt")
         {
             fs.rename(filePath, orgDir+"/Txts/"+filename, (err)=>{
                 if(err) throw err;
-                else console.log('Successfully moved');
                 });
         }
 
@@ -83,23 +76,16 @@ function fileOrganizer(dirPath)
 {
     if(isFileChecker(dirPath))
     {
-        console.log(dirPath+" is accessed");
-        //put that file inrespectiveapppropriate folder
-
         putInCorrectFolder(dirPath);
     }
     else
     {
-        if(dirPath==orgDir)
+        if(dirPath==orgDir) //"org dir found... returning"
         {
-            console.log("org dir found... returning");
             return;
         }
         else{
-        console.log(dirPath);
-
         let children=readFolderContent(dirPath);
-
         for(let i=0;i<children.length;i++)
         {
             fileOrganizer(dirPath+"/"+children[i]);
@@ -109,7 +95,20 @@ function fileOrganizer(dirPath)
 }
 
 
+function deleteEmptyFoders(dirPath)
+{
+    let children=readFolderContent(dirPath);
+    for(let i=0;i<children.length;i++)
+    {
+        if(children[i]!="OrganizedFiles")
+            try {
+                fs.rmdirSync(dirPath+"/"+children[i], { recursive: true });
+            } catch (err) {
+                console.error(`Error while deleting ${dir}.`);
+            }
 
+    }   
+}
 
 module.exports={
     orgFun:organizeExecuter
