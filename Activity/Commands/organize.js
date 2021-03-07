@@ -52,36 +52,51 @@ function locateInFolder(filePath)
         let extension=path.extname(filePath);
         let filename=path.basename(filePath);
         let flag=false;
-        for( let i=0;i<types.media.length;i++)
-            if(extension == types.media[i]){ 
-            flag=true;
-            fs.rename(filePath, orgDir+"/media/"+filename, (err)=>{
-                   if(err) throw err;
-                    });}
-        for( let i=0;i<types.archives.length;i++){ 
-            flag=true;
-            if(extension == types.archives[i])
-                fs.rename(filePath, orgDir+"/archives/"+filename, (err)=>{
-                if(err) throw err;
-                    });}
-        for( let i=0;i<types.documents.length;i++){ 
-            flag=true;
-            if(extension == types.documents[i])
-            fs.rename(filePath, orgDir+"/documents/"+filename, (err)=>{
-                   if(err) throw err;
-                    });}
-        for( let i=0;i<types.app.length;i++)
-            if(extension == types.app[i]){ 
-                flag=true;
-                fs.rename(filePath, orgDir+"/app/"+filename, (err)=>{
-                if(err) throw err;
-                });}
-        for( let i=0;i<types.images.length;i++)
-            if(extension == types.images[i]){ 
-                flag=true;
-                fs.rename(filePath, orgDir+"/images/"+filename, (err)=>{
-                if(err) throw err;
-                });}
+        // for( let i=0;i<types.media.length;i++)
+        //     if(extension == types.media[i]){ 
+        //     flag=true;
+        //     fs.rename(filePath, orgDir+"/media/"+filename, (err)=>{
+        //            if(err) throw err;
+        //             });}
+        // for( let i=0;i<types.archives.length;i++){ 
+        //     flag=true;
+        //     if(extension == types.archives[i])
+        //         fs.rename(filePath, orgDir+"/archives/"+filename, (err)=>{
+        //         if(err) throw err;
+        //             });}
+        // for( let i=0;i<types.documents.length;i++){ 
+        //     flag=true;
+        //     if(extension == types.documents[i])
+        //     fs.rename(filePath, orgDir+"/documents/"+filename, (err)=>{
+        //            if(err) throw err;
+        //             });}
+        // for( let i=0;i<types.app.length;i++)
+        //     if(extension == types.app[i]){ 
+        //         flag=true;
+        //         fs.rename(filePath, orgDir+"/app/"+filename, (err)=>{
+        //         if(err) throw err;
+        //         });}
+        // for( let i=0;i<types.images.length;i++)
+        //     if(extension == types.images[i]){ 
+        //         flag=true;
+        //         fs.rename(filePath, orgDir+"/images/"+filename, (err)=>{
+        //         if(err) throw err;
+        //         });}
+        console.log(filename);
+        for(let key in types)
+        {
+            for(let i=0;i<types[key].length;i++)
+                if(extension == types[key][i])
+                {
+                    flag=true;
+                    n_path=orgDir+"/"+key+"/"+filename;
+                    fs.rename(filePath,  orgDir+"/"+key+"/"+filename, (err)=>{
+                        if(err) throw err;
+                        });
+                }
+
+        }
+
         if(flag==false)
         {
             fs.rename(filePath, orgDir+"/other/"+filename, (err)=>{
