@@ -1,8 +1,15 @@
 
 let fs=require("fs");
-//let rimraf = require("rimraf");
 const path=require('path');
 let orgDir;
+let types = {
+    media: [".mp4", ".mkv", ".mp3",".avi",".flv",".wav"],
+    archives: ['.zip', '.7z', '.rar', '.tar', '.gz', '.ar', '.iso', ".xz"],
+    documents: ['.docx', '.doc', '.pdf', '.xlsx', '.xls', '.odt', '.ods', '.odp', '.odg', '.odf', '.txt', '.ps', '.tex'],
+    app: ['exe', 'dmg', 'pkg', "deb"],
+    images: [".jpg",".jpeg",".gif",".png"]
+}
+
 function organizeExecuter(dirPath)
 {   
     /* create main folder => OrganizedFiles.  create sub folder for each type under this folder */
@@ -10,11 +17,15 @@ function organizeExecuter(dirPath)
     if (!fs.existsSync(orgDir)){
         fs.mkdirSync(orgDir);
     }
-    subDirs=[orgDir+"/Videos", orgDir+"/Audios", orgDir+"/Docs", orgDir+"/Txts", orgDir+"/Images"];
-    for(let i=0;i<subDirs.length;i++)
-    if (!fs.existsSync(subDirs[i])){
-        fs.mkdirSync(subDirs[i]);
-    }
+    for(let key in types)
+        {
+            n_path=path.join(orgDir,key);
+            if (!fs.existsSync(n_path))
+                fs.mkdirSync(n_path);
+        }
+    n_path=path.join(orgDir,"other");
+    if (!fs.existsSync(n_path))
+        fs.mkdirSync(n_path);
 
     fileOrganizer(dirPath);
     deleteEmptyFoders(dirPath);
@@ -35,37 +46,45 @@ function readFolderContent(dirPath)
     return fs.readdirSync(dirPath); //if many files then stack prob then use Asynch functiom
 }
 
-function putInCorrectFolder(filePath)
+function locateInFolder(filePath)
 {
-        let filename=path.basename(filePath);
+       
         let extension=path.extname(filePath);
-        if(extension==".jpeg" || extension==".jpg" || extension==".png" || extension==".gif")
-        {
-            fs.rename(filePath, orgDir+"/Images/"+filename, (err)=>{
+        let filename=path.basename(filePath);
+        let flag=false;
+        for( let i=0;i<types.media.length;i++)
+            if(extension == types.media[i]){ 
+            flag=true;
+            fs.rename(filePath, orgDir+"/media/"+filename, (err)=>{
+                   if(err) throw err;
+                    });}
+        for( let i=0;i<types.archives.length;i++){ 
+            flag=true;
+            if(extension == types.archives[i])
+                fs.rename(filePath, orgDir+"/archives/"+filename, (err)=>{
                 if(err) throw err;
-                });
-        }
-        else if(extension==".mp4" || extension==".avi" || extension==".mkv" || extension==".flv")
-        {
-            fs.rename(filePath, orgDir+"/Videos/"+filename, (err)=>{
+                    });}
+        for( let i=0;i<types.documents.length;i++){ 
+            flag=true;
+            if(extension == types.documents[i])
+            fs.rename(filePath, orgDir+"/documents/"+filename, (err)=>{
+                   if(err) throw err;
+                    });}
+        for( let i=0;i<types.app.length;i++)
+            if(extension == types.app[i]){ 
+                flag=true;
+                fs.rename(filePath, orgDir+"/app/"+filename, (err)=>{
                 if(err) throw err;
-                });
-        }
-        else if(extension==".mp3" || extension==".wav")
-        {
-            fs.rename(filePath, orgDir+"/Audios/"+filename, (err)=>{
+                });}
+        for( let i=0;i<types.images.length;i++)
+            if(extension == types.images[i]){ 
+                flag=true;
+                fs.rename(filePath, orgDir+"/images/"+filename, (err)=>{
                 if(err) throw err;
-                });
-        }
-        else if(extension==".docx" || extension==".doc" || extension==".pdf" || extension==".csv")
+                });}
+        if(flag==false)
         {
-            fs.rename(filePath, orgDir+"/Docs/"+filename, (err)=>{
-                if(err) throw err;
-                });
-        }
-        else if(extension==".txt")
-        {
-            fs.rename(filePath, orgDir+"/Txts/"+filename, (err)=>{
+            fs.rename(filePath, orgDir+"/other/"+filename, (err)=>{
                 if(err) throw err;
                 });
         }
@@ -76,7 +95,7 @@ function fileOrganizer(dirPath)
 {
     if(isFileChecker(dirPath))
     {
-        putInCorrectFolder(dirPath);
+        locateInFolder(dirPath);
     }
     else
     {
